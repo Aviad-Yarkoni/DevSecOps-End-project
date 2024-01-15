@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // Checkout code from GitHub
+                    checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/Aviad-Yarkoni/DevSecOps-End-project.git']]])
+                }
+            }
+        }
+
+        stage('Build and Run Docker Container') {
+            when {
+                // Trigger the stage only if changes occur in specific branches
+                expression { env.BRANCH_NAME in ['main', 'develop', 'feature'] }
+            }
+            steps {
+                script {
+                    // Build Docker image from Dockerfile
+                    dockerImage = docker.build("${DOCKER_IMAGE_NAME}:${env.BUILD_NUMBER}")
+
+                    // Run Docker container
+                    dockerImage.run("-p 8081:8080 -d")
+                }
+            }
+        }
+
+        stage('Curl Check') {
+            steps {
+                script {
+                    // Wait for the application to start
+                    sleep(time: 60, unit: 'SECONDS')
+
+                    // Curl check on localhost:8080
+                    def responseCode = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8081', returnStatus: true)
+
+                    // Check if the response code is 200
+                    if (responseCode == 200) {
+                        currentBuild.result = 'SUCCESS'
+                    } else {
+                        currentBuild.result = 'FAILURE'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Remove Docker container and image
+            sh 'docker stop $(docker ps -q)'
+            sh 'docker rm $(docker ps -a -q)'
+            sh 'docker rmi $(docker images -q)'
+        }
+    }
+}
