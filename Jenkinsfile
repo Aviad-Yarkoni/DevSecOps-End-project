@@ -1,55 +1,41 @@
 pipeline {
-    agent any
+  environment {
+    imagename = "yenigul/hacicenkins"
+    registryCredential = 'yenigul-dockerhub'
+    dockerImage = ''
+  }
+  agent any
+  stages {
+    stage('Cloning Git') {
+      steps {
+        git([url: 'https://github.com/ismailyenigul/hacicenkins.git', branch: 'master', credentialsId: 'ismailyenigul-github-user-token'])
 
-    stages {
-        stage('Clone Repository') {
-            steps {
-                script {
-                    // Clean up workspace before cloning
-                    deleteDir()
-
-                    // Clone the GitHub repository
-                    git branch: 'main', url: 'https://github.com/Aviad-Yarkoni/DevSecOps-End-project'
-                }
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Build Docker image using the Dockerfile in the repository
-                    docker.build("my-docker-image:${env.BUILD_NUMBER}")
-                }
-            }
-        }
-
-        stage('Run Docker Image') {
-            steps {
-                script {
-                    // Run the Docker image
-                    docker.image("my-docker-image:${env.BUILD_NUMBER}").run()
-                }
-            }
-        }
-
-        stage('Cleanup') {
-            steps {
-                script {
-                    // Stop and remove running containers
-                    sh 'docker ps -aq | xargs docker stop'
-                    sh 'docker ps -aq | xargs docker rm'
-
-                    // Remove Docker images
-                    sh 'docker images -q | xargs docker rmi'
-                }
-            }
-        }
+      }
     }
-
-    post {
-        always {
-            // Clean up workspace after pipeline execution
-            deleteDir()
+    stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build imagename
         }
+      }
     }
+    stage('Deploy Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push("$BUILD_NUMBER")
+             dockerImage.push('latest')
+
+          }
+        }
+      }
+    }
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $imagename:$BUILD_NUMBER"
+         sh "docker rmi $imagename:latest"
+
+      }
+    }
+  }
 }
