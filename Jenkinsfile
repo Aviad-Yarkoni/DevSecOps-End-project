@@ -23,6 +23,13 @@ pipeline {
             }
         }
 
+         stage('Sleep') {
+            steps {
+                // Introduce a 60-second sleep
+                sh 'sleep 60'
+            }
+        }
+
         stage('Docker Build') {
             steps {
                 // 3. Docker build
@@ -32,12 +39,26 @@ pipeline {
             }
         }
 
+         stage('Sleep') {
+            steps {
+                // Introduce a 60-second sleep
+                sh 'sleep 60'
+            }
+        }
+
         stage('Docker Run') {
             steps {
                 // 4. Docker run for the new image
                 script {
                     sh 'docker run -d --name end_projent_test -name end_projent '
                 }
+            }
+        }
+
+         stage('Sleep') {
+            steps {
+                // Introduce a 60-second sleep
+                sh 'sleep 60'
             }
         }
         stage('Cleanup') {
