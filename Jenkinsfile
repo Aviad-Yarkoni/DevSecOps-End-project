@@ -31,7 +31,6 @@ pipeline {
             steps {
                 // 3. Docker build
                 script {
-                    sh 'cd /var/jenkins_home/workspace/end_project/DevSecOps-End-project'
                     sh 'docker build . -t endprojent:one'
                 }
                 script{
