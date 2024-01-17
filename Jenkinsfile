@@ -53,7 +53,7 @@ pipeline {
             steps {
                 // Check response from 127.0.0.1:909
                 script {
-                    def response = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:909', returnStatus: true).trim()
+                    def response = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:9090', returnStatus: true).trim()
                     echo "HTTP Response Code: ${response}"
                     
                     if (response == '200') {
