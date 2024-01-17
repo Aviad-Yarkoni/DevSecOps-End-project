@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     // Delete temp directory if it exists
-                    sh 'rm -rf temp || true'
+                    sh 'rm -rf *'
                     
                     // Create and cd to temp directory
                     sh 'mkdir temp'
