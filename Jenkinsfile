@@ -9,16 +9,8 @@ pipeline {
                     sh 'docker stop $(docker ps -a -q) || true'
                     sh 'docker rm $(docker ps -a -q) || true'
                     sh 'docker rmi $(docker images -q) || true'
-                }
-            }
-        }
-
-        stage('Setup') {
-            steps {
-                script {
-                    // Delete temp directory if it exists
                     sh 'cd /var/jenkins_home/workspace/'
-                    sh 'rm -rf *'                
+                    sh 'rm -rf *'      
                 }
             }
         }
