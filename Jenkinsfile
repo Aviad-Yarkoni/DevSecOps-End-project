@@ -44,7 +44,7 @@ pipeline {
                 // 3. Docker build
                 script {
                     sh 'cd /var/jenkins_home/workspace/end_project/DevSecOps-End-project'
-                    sh 'docker build -t end_projent .'
+                    sh 'docker build . -t EndProjent:one'
                 }
                 script{
                 sleep(time:60,unit:"SECONDS")
@@ -56,7 +56,7 @@ pipeline {
             steps {
                 // 4. Docker run for the new image
                 script {
-                    sh 'docker run -d --name end_projent_test -name end_projent '
+                    sh 'docker run -d --name EndProjent:one -name end_projent '
                 }
                 script{
                 sleep(time:60,unit:"SECONDS")
