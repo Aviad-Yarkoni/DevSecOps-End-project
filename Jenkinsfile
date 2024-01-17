@@ -49,6 +49,22 @@ pipeline {
             }
         }
 
+        stage('Check Response') {
+            steps {
+                // Check response from 127.0.0.1:909
+                script {
+                    def response = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:909', returnStatus: true).trim()
+                    echo "HTTP Response Code: ${response}"
+                    
+                    if (response == '200') {
+                        echo "Successfully received a 200 OK response."
+                    } else {
+                        error "Failed to receive a 200 OK response."
+                    }
+                }
+            }
+        }
+
         stage('Cleanup') {
             steps {
                 // Cleanup Docker images and containers
