@@ -2,14 +2,26 @@ pipeline {
     agent any
     
     stages {
+        stage('Clean Up') {
+            steps {
+                // Clean up existing containers and images
+                script {
+                    sh 'docker stop $(docker ps -a -q) || true'
+                    sh 'docker rm $(docker ps -a -q) || true'
+                    sh 'docker rmi $(docker images -q) || true'
+                }
+            }
+        }
+
         stage('Setup') {
             steps {
                 script {
-                    // 1. Make directory 'temp' and cd to temp
-                    dir('temp') {
-                        sh 'mkdir temp'
-                        sh 'cd temp'
-                    }
+                    // Delete temp directory if it exists
+                    sh 'rm -rf temp || true'
+                    
+                    // Create and cd to temp directory
+                    sh 'mkdir temp'
+                    sh 'cd temp'
                 }
             }
         }
@@ -65,9 +77,9 @@ pipeline {
             steps {
                 // Cleanup Docker images and containers
                 script {
-                    sh 'docker stop your-container-name || true'
-                    sh 'docker rm your-container-name || true'
-                    sh 'docker rmi your-image-name || true'
+                    sh 'docker stop end_projent_test || true'
+                    sh 'docker rm end_projent_test || true'
+                    sh 'docker rmi end_projent || true'
                 }
             }
         }
