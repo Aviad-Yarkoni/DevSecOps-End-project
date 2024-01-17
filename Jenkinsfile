@@ -41,7 +41,7 @@ pipeline {
             steps {
                 // 4. Docker run for the new image
                 script {
-                    sh 'docker run -d --name endprojent:one -name end_projent '
+                    sh 'docker run -d --name test_end_project -p 9090:8000 endprojent:one '
                 }
                 script{
                 sleep(time:60,unit:"SECONDS")
