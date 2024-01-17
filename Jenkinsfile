@@ -32,13 +32,9 @@ pipeline {
                 script {
                     sh 'git clone https://github.com/Aviad-Yarkoni/DevSecOps-End-project.git'
                 }
-            }
-        }
-
-         stage('Sleep') {
-            steps {
-                // Introduce a 60-second sleep
-                sh 'sleep 60'
+                script{
+                sleep(time:60,unit:"SECONDS")
+                }
             }
         }
 
@@ -48,13 +44,9 @@ pipeline {
                 script {
                     sh 'docker build -t end_projent .'
                 }
-            }
-        }
-
-         stage('Sleep') {
-            steps {
-                // Introduce a 60-second sleep
-                sh 'sleep 60'
+                script{
+                sleep(time:60,unit:"SECONDS")
+                }
             }
         }
 
@@ -64,15 +56,12 @@ pipeline {
                 script {
                     sh 'docker run -d --name end_projent_test -name end_projent '
                 }
+                script{
+                sleep(time:60,unit:"SECONDS")
+                }
             }
         }
 
-         stage('Sleep') {
-            steps {
-                // Introduce a 60-second sleep
-                sh 'sleep 60'
-            }
-        }
         stage('Cleanup') {
             steps {
                 // Cleanup Docker images and containers
