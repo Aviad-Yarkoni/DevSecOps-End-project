@@ -17,6 +17,7 @@ pipeline {
             steps {
                 script {
                     // Delete temp directory if it exists
+                    sh 'cd /var/jenkins_home/workspace/'
                     sh 'rm -rf *'
                     
                     // Create and cd to temp directory
@@ -42,6 +43,7 @@ pipeline {
             steps {
                 // 3. Docker build
                 script {
+                    sh 'cd /var/jenkins_home/workspace/end_project/DevSecOps-End-project'
                     sh 'docker build -t end_projent .'
                 }
                 script{
@@ -69,6 +71,8 @@ pipeline {
                     sh 'docker stop end_projent_test || true'
                     sh 'docker rm end_projent_test || true'
                     sh 'docker rmi end_projent || true'
+                    sh 'cd /var/jenkins_home/workspace/'
+                    sh 'rm -rf *'
                 }
             }
         }
