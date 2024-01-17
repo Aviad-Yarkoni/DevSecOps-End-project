@@ -1,57 +1,54 @@
 pipeline {
-  agent any
-  environment {
-        APP_IMAGE = 'shmuela6/tasksapp:12.1'
-        UNIT_TEST_IMAGE = 'shmuela6/tasksapp:test_unit_updated'
-        INT_TEST_IMAGE = 'shmuela6/tasksapp:tests_latest'
-    }
-  stages {
-
-    stage('Run Unit Test'){
-        steps{
-            echo 'Start unit test'
-            sh "docker run ${env.UNIT_TEST_IMAGE}"
-            script{
-                sleep(time:5,unit:"SECONDS")
-            }
-        }
-    }
-
-    stage('Run Tasks App'){
-        steps{
-            echo 'Start app'
-            sh "docker run -d -p 80:5000 ${env.APP_IMAGE}"
-            script{
-                sleep(time:10,unit:"SECONDS")
-            }
-        }
-    }
-
-    stage('Run Integration Test'){
-        steps{
-            echo 'Start integration test'
-            sh "docker run --platform linux/amd64 ${env.INT_TEST_IMAGE}"
-        }
-    }
-
-
+    agent any
     
-    stage('Clean resources'){
-        steps{
-            echo 'Stopping containers'
-            sh '''docker stop $(docker ps -a -q)'''
-            echo 'Removing containers'
-            sh '''docker rm $(docker ps -a -q)'''
+    stages {
+        stage('Setup') {
+            steps {
+                script {
+                    // 1. Make directory 'temp' and cd to temp
+                    dir('temp') {
+                        sh 'mkdir temp'
+                        sh 'cd temp'
+                    }
+                }
+            }
+        }
+
+        stage('Git Clone') {
+            steps {
+                // 2. Git clone repo 'aaa'
+                script {
+                    sh 'git clone https://github.com/Aviad-Yarkoni/DevSecOps-End-project.git'
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                // 3. Docker build
+                script {
+                    sh 'docker build -t end_projent .'
+                }
+            }
+        }
+
+        stage('Docker Run') {
+            steps {
+                // 4. Docker run for the new image
+                script {
+                    sh 'docker run -d --name end_projent_test -name end_projent '
+                }
+            }
+        }
+        stage('Cleanup') {
+            steps {
+                // Cleanup Docker images and containers
+                script {
+                    sh 'docker stop your-container-name || true'
+                    sh 'docker rm your-container-name || true'
+                    sh 'docker rmi your-image-name || true'
+                }
+            }
         }
     }
-  }
-  post{
-    success {
-        echo 'Unit and integration test ran successfully.'
-    }
-    failure{
-        echo 'Unit and integration test failed.'
-    }
-  }
-
 }
