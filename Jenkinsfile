@@ -8,9 +8,7 @@ pipeline {
                 script {
                     sh 'docker stop $(docker ps -a -q) || true'
                     sh 'docker rm $(docker ps -a -q) || true'
-                    sh 'docker rmi $(docker images -q) || true'
-                    sh 'cd /var/jenkins_home/workspace/'
-                    sh 'rm -rf *'      
+                    sh 'docker rmi $(docker images -q) || true'     
                 }
             }
         }
@@ -31,7 +29,7 @@ pipeline {
             steps {
                 // 3. Docker build
                 script {
-                    sh 'docker build . -t endprojent:one'
+                    sh 'DOCKER_BUILDKIT=0 docker build . -t endprojent:one'
                 }
                 script{
                 sleep(time:60,unit:"SECONDS")
