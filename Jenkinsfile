@@ -15,7 +15,7 @@ pipeline {
 
         stage('Git Clone') {
             steps {
-                // 2. Git clone repo 'aaa'
+                // 2. Git clone repo 
                 script {
                     sh 'git clone https://github.com/Aviad-Yarkoni/DevSecOps-End-project.git'
                 }
