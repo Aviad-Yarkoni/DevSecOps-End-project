@@ -20,7 +20,7 @@ pipeline {
                     sh 'git clone https://github.com/Aviad-Yarkoni/DevSecOps-End-project.git'
                 }
                 script{
-                sleep(time:60,unit:"SECONDS")
+                sleep(time:10,unit:"SECONDS")
                 }
             }
         }
@@ -32,7 +32,7 @@ pipeline {
                     sh 'DOCKER_BUILDKIT=0 docker build . -t endprojent:one'
                 }
                 script{
-                sleep(time:60,unit:"SECONDS")
+                sleep(time:10,unit:"SECONDS")
                 }
             }
         }
@@ -44,7 +44,7 @@ pipeline {
                     sh 'docker run -d --name test_end_project -p 8000:8000 endprojent:one '
                 }
                 script{
-                sleep(time:60,unit:"SECONDS")
+                sleep(time:10,unit:"SECONDS")
                 }
             }
         }
